@@ -1,0 +1,75 @@
+<html>
+<head>
+	<title>Tic-Tac-Toe</title>
+    <link rel="stylesheet" href="foundation.css" />
+    <script src="tictactoe.js"></script>
+	<style>
+		table {
+			border:0px solid transparent;
+		}
+		tr {
+		  height: 100px;
+		}
+
+		td {
+		  width: 100px;
+		  border: 2px solid #2d2d2d;
+		  text-align: center;
+		}
+		.x {
+			background-color: tomato;
+			border:1px solid tomato;
+		}
+		.x:after {
+			content:"X";
+			font-size:24px;
+		}
+		.o {
+			background-color: gold;
+			border:1px solid gold;
+		}
+		.o:after {
+			content:"O";
+			font-size:24px;
+		}
+	</style>
+	
+</head>
+<body>
+	<div class="row">
+		<div class="large-12 columns">
+			<h1>Tic-Tac-Toe</h1>
+		</div>
+	</div>
+	<div class="row" id="game">
+      <div class="large-4 columns">
+      	<label>Name of Player 1:</label>
+      	<input type="text" id="player1" placeholder="Player 1" />
+      	<label>Name of Player 2:</label>
+      	<input type="text" id="player2" placeholder="Player 2" />
+      	<button class="medium success button" id="startButton">Start Game</button><br/>
+        <button class="medium secondary button" id="resetButton">Reset Game</button>
+      	<h3>No game in progress</h3>
+      </div>
+      <div class="large-8 columns">
+	    <table>
+	      <tr>
+	      	<td data-place="0">&nbsp;</td>
+	      	<td data-place="1">&nbsp;</td>
+	      	<td data-place="2">&nbsp;</td>
+	      </tr>
+	      <tr>
+	      	<td data-place="3">&nbsp;</td>
+	      	<td data-place="4">&nbsp;</td>
+	      	<td data-place="5">&nbsp;</td>
+	      </tr>
+	      <tr>
+	      	<td data-place="6">&nbsp;</td>
+	      	<td data-place="7">&nbsp;</td>
+	      	<td data-place="8">&nbsp;</td>
+	      </tr>
+	    </table>
+		</div>
+	</div>
+</body>
+</html>
