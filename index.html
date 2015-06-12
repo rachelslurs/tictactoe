@@ -16,6 +16,9 @@
 		  border: 2px solid #2d2d2d;
 		  text-align: center;
 		}
+		#player1 {
+			border:2px solid tomato;
+		}
 		.x {
 			background-color: tomato;
 			border:2px solid black;
@@ -23,6 +26,9 @@
 		.x:after {
 			content:"X";
 			font-size:24px;
+		}
+		#player2 {
+			border:2px solid gold;
 		}
 		.o {
 			background-color: gold;
@@ -42,16 +48,18 @@
 		</div>
 	</div>
 	<div class="row" id="game">
-      <div class="large-4 columns">
+	<div class="large-3 columns">
+      	<h3>No game in progress</h3>
+	</div>
+      <div class="large-3 columns">
       	<label>Name of Player 1:</label>
       	<input type="text" id="player1" placeholder="Player 1" />
       	<label>Name of Player 2:</label>
       	<input type="text" id="player2" placeholder="Player 2" />
       	<button class="medium success button" id="startButton">Start Game</button><br/>
         <button class="medium secondary button" id="resetButton">Reset Game</button>
-      	<h3>No game in progress</h3>
       </div>
-      <div class="large-8 columns">
+      <div class="large-6 columns">
 	    <table>
 	      <tr>
 	      	<td data-place="0">&nbsp;</td>
@@ -69,7 +77,7 @@
 	      	<td data-place="8">&nbsp;</td>
 	      </tr>
 	    </table>
-		</div>
 	</div>
+</div>
 </body>
 </html>
