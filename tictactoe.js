@@ -7,39 +7,31 @@
 	var currentTurn = {};
 	var gameInProgress = false;
 	
+	function Player(playerNumber, pointsOnWin, playerMark, playerBool) {
+		this.playerNumber = playerNumber;
+		this.points = 0;
+		this.pointsOnWin=pointsOnWin;
+		this.name = playerMark;
+		this.el = document.getElementById(playerNumber);
+		this.el.disabled=false;
+		this.mark = playerMark;
+		this.bool = playerBool;
+	}
 	var players = {
 		init: function() {
-
-			// Player 1
-			player1.el = document.getElementById('player1');
-			player1.el.value = "";
-			player1.name = "X";
-			player1.val = true;
-			player1.mark = "x";
-
-			// Player 2
-			player2.el = document.getElementById('player2');
-			player2.el.value="";
-			player2.name = "O";
-			player2.val = false;
-			player2.mark = "o";
-
-			player1.el.disabled=false;
-			player2.el.disabled=false;
+			player1 = new Player('player1',10,'x',true);
+			player2 = new Player('player2',-10,'o',false);
+			console.log(player1,player2);
 
 		},
 		save: function() {
-			player1.input = player1.el.value;
-			player2.input = player2.el.value;
-
-			// If custom input is entered, overwrite default
-			if (player1.input !== "") {
-				player1.name = player1.input;
+			if (player1.el.value) {
+				player1.name=player1.el.value;
 			}
-
-			if (player2.input !== "") {
-				player2.name = player2.input;
+			if (player2.el.value) {
+				player2.name=player2.el.value;
 			}
+			console.log(player1,player2);
 
 			// Disable player name changes during game
 			player1.el.disabled=true;
@@ -51,7 +43,7 @@
 			player2.el.className = "";
 		},
 		nextTurn: function() {
-			if (!currentTurn.val === player1.val) {
+			if (!currentTurn.bool === player1.bool) {
 				currentTurn = player1;
 				player2.el.className = "";
 			}
