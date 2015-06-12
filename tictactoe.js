@@ -6,42 +6,46 @@
 	var player1= {}; 
 	var player2= {};
 	var currentTurn = {};
-	var gameOver = true;
+	var gameInProgress = false;
 	
 	var players = {
 		init: function() {
-			player1.input = document.getElementById('player1').value;
+			player1.el = document.getElementById('player1');
+			player1.el.value = "";
+			player1.name = "Player 1";
 			player1.val = true;
 			player1.mark = "x";
-			player2.input = document.getElementById('player2').value;
+
+			player2.el = document.getElementById('player2');
+			player2.el.value="";
+			player2.name = "Player 2";
 			player2.val = false;
 			player2.mark = "o";
 
-			// If custom input isn't entered, set to default
-			if (player1.input === "") {
-				player1.name = "Player 1";
-			}
-			else {
-				player1.name = player1.input;
-			}
-			if (player2.input === "") {
-				player2.name = "Player 2";
-			}
-			else {
-				player2.name = player2.input;
-			}
-
-			console.log(player1);
-			console.log(player2);
+			player1.el.disabled=false;
+			player2.el.disabled=false;
 
 			// First turn defaults to player1
 			currentTurn = player1;
-			gameStatus.update(player1.name + " goes first");
+		},
+		save: function() {
+			player1.input = player1.el.value;
+			player2.input = player2.el.value;
+			// If custom input is entered, change default
+			if (player1.input !== "") {
+				player1.name = player1.input;
+			}
+			if (player2.input !== "") {
+				player2.name = player2.input;
+			}
+			// Disable input during game
+			player1.el.disabled=true;
+			player2.el.disabled=true;
 		},
 		nextTurn: function() {
 			if (!currentTurn.val === player1.val) {
 				currentTurn = player1;
-				console.log("Current turn is now " + currentTurn.name);
+				console.log("It is " + currentTurn.name + "'s turn.");
 			}
 			else {
 				currentTurn = player2;
@@ -59,23 +63,32 @@
 				this.boardCells[i].className="blank";
 				this.cells[i]=null;
 			}
-			gameStatus.update("Press Start Game");
 		},
 		isSpaceEmpty: function(space) {
-			if (space.className == "blank") {
-				console.log('space ' + space.dataset.place + " is blank, make move");
-				this.makeMove(space);
+			if (gameInProgress) {
+				if (space.className == "blank") {
+					var index=space.dataset.place;
+					console.log('space ' + index + " is blank, make move");
+					this.makeMove(space,index);
+				}
+				else {
+					console.warn(space);
+					console.log('space is not available');
+				}
 			}
-			else if (space.className == "x" || space.className == "y") {
-				console.log('space is not available');
+			else {
+				console.log('Game is not in progress.');
 			}
+				
 			
 		},
-		makeMove: function(space) {
-			this.cells[space.dataset.place] = currentTurn.mark;
-			this.boardCells[space.dataset.place] = currentTurn.mark;
+		makeMove: function(space,index) {
+			this.cells[index] = currentTurn.mark;
+			this.boardCells[index].className = currentTurn.mark;
 			console.log(this.cells);
+			console.log(this.boardCells);
 			space.className = currentTurn.mark;
+			cellData = currentTurn.mark;
 			this.check();
 		},
 		check: function() {
@@ -86,10 +99,10 @@
 			if (board.status == "win") {
 				gameStatus.update(currentTurn.name + " wins!");
 				console.log(currentTurn.name + " wins!");
-				gameOver = true;
+				gameInProgress = false;
 			}
 			else if (board.status == "draw") {
-				gameOver = true;
+				gameInProgress = false;
 			}
 			else {
 				players.nextTurn();
@@ -98,33 +111,29 @@
 	};
 	var gameStatus = {
 		init: function() {
-			this.bindEvents();
 			board.init();
+			players.init();
 		},
 		bindEvents: function() {
 			document.getElementById("resetButton").addEventListener("click", function(){
 				console.log('resetButton pressed');
-				gameOver = true;
-				board.init();
-				players.init();
+				gameInProgress = false;
+				gameStatus.init();
+				gameStatus.update("Press Start Game");
 			});
 			document.getElementById("startButton").addEventListener("click", function(){
 				console.log('startButton pressed');
-				gameOver = false;
+				gameInProgress = true;
 				board.init();
-				players.init();
-				for (var i = 0; i < board.boardCells.length; ++i) {
-					board.boardCells[i].addEventListener("click", function() {
-						if (gameOver) {
-							console.log('No game in progress');
-						}
-						else {
-							board.isSpaceEmpty(this);
-						}
-						
-					});
-				}
+				players.save();
+				gameStatus.update(player1.name + " goes first");
+				
 			});
+			for (var i = 0; i < board.boardCells.length; ++i) {
+				board.boardCells[i].addEventListener("click", function() {
+					board.isSpaceEmpty(this);
+				});
+			}
 		},
 		update: function(text) {
 			document.querySelector('h3').innerText = text;
@@ -161,6 +170,8 @@
 	document.addEventListener("DOMContentLoaded", function() {
 		console.log('Document loaded');
 		gameStatus.init();
+		gameStatus.update("Press Start Game");
+		gameStatus.bindEvents();
 	});
 	
 	
