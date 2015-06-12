@@ -2,7 +2,6 @@
 (function TicTacToe() {
 
 	// Global variables and DOM selectors
-	
 	var player1= {}; 
 	var player2= {};
 	var currentTurn = {};
@@ -10,37 +9,46 @@
 	
 	var players = {
 		init: function() {
+
+			// Player 1
 			player1.el = document.getElementById('player1');
 			player1.el.value = "";
-			player1.name = "Player 1";
+			player1.name = "X";
 			player1.val = true;
 			player1.mark = "x";
 
+			// Player 2
 			player2.el = document.getElementById('player2');
 			player2.el.value="";
-			player2.name = "Player 2";
+			player2.name = "O";
 			player2.val = false;
 			player2.mark = "o";
 
 			player1.el.disabled=false;
 			player2.el.disabled=false;
 
-			// First turn defaults to player1
-			currentTurn = player1;
 		},
 		save: function() {
 			player1.input = player1.el.value;
 			player2.input = player2.el.value;
-			// If custom input is entered, change default
+
+			// If custom input is entered, overwrite default
 			if (player1.input !== "") {
 				player1.name = player1.input;
 			}
+
 			if (player2.input !== "") {
 				player2.name = player2.input;
 			}
-			// Disable input during game
+
+			// Disable player name changes during game
 			player1.el.disabled=true;
 			player2.el.disabled=true;
+
+			// First turn defaults to player1
+			currentTurn = player1;
+			currentTurn.el.className = "current";
+			player2.el.className = "";
 		},
 		nextTurn: function() {
 			if (!currentTurn.val === player1.val) {
@@ -55,12 +63,12 @@
 			gameStatus.update(currentTurn.name + "'s turn");
 		}
 	};
+
 	var board = {
 		init: function() {		
 			this.status = "none";
 			this.boardCells = document.getElementsByTagName('td');
 			this.cells = [null,null,null,null,null,null,null,null,null];
-			console.log(this);
 			for (var i = 0; i < this.boardCells.length; i++) {
 				this.boardCells[i].className="blank";
 				this.cells[i]=null;
@@ -70,11 +78,9 @@
 			if (gameInProgress) {
 				if (space.className == "blank") {
 					var index=space.dataset.place;
-					console.log('space ' + index + " is blank, make move");
 					this.makeMove(space,index);
 				}
 				else {
-					console.warn(space);
 					console.log('space is not available');
 				}
 			}
@@ -87,30 +93,31 @@
 		makeMove: function(space,index) {
 			this.cells[index] = currentTurn.mark;
 			this.boardCells[index].className = currentTurn.mark;
-			console.log(this.cells);
-			console.log(this.boardCells);
+			console.log("Data:",this.cells);
+			console.log("DOM:",this.boardCells);
 			space.className = currentTurn.mark;
 			cellData = currentTurn.mark;
 			this.check();
 		},
 		check: function() {
-			console.log('checking...');
-			//review if there are still potential winning combinations
-			//review whether any winning combinations have been made
 			gameStatus.isWinner();
+			gameStatus.isDraw();
 			if (board.status == "win") {
 				gameStatus.update(currentTurn.name + " wins!");
-				console.log(currentTurn.name + " wins!");
 				gameInProgress = false;
+				document.getElementById("startButton").disabled = false;
 			}
 			else if (board.status == "draw") {
+				gameStatus.update("Draw.");
 				gameInProgress = false;
+				document.getElementById("startButton").disabled = false;
 			}
 			else {
 				players.nextTurn();
 			}
 		}
 	};
+
 	var gameStatus = {
 		init: function() {
 			board.init();
@@ -118,13 +125,15 @@
 		},
 		bindEvents: function() {
 			document.getElementById("resetButton").addEventListener("click", function(){
-				console.log('resetButton pressed');
+				console.log('resetButton pressed. Enable start button.');
 				gameInProgress = false;
+				document.getElementById("startButton").disabled = false;
 				gameStatus.init();
 				gameStatus.update("No game in progress");
 			});
 			document.getElementById("startButton").addEventListener("click", function(){
-				console.log('startButton pressed');
+				console.log('startButton pressed. Disabled while game is in progress.');
+				this.disabled=true;
 				gameInProgress = true;
 				board.init();
 				players.save();
@@ -138,9 +147,10 @@
 			}
 		},
 		update: function(text) {
-			document.querySelector('h3').innerText = text;
+			document.querySelector('h4').innerText = text;
 		},
 		isWinner: function() {
+			// Review whether any winning combinations have been made
 			var wins = [
 			  [0,1,2],
 			  [3,4,5],
@@ -153,7 +163,7 @@
 			 ];
 			for(var i=0; i<wins.length; i++) {
 				var a, b, c;
-				// either holding 'x', 'o', or null
+				// cells holding 'x', 'o', or null
 				a = board.cells[wins[i][0]];
 				b = board.cells[wins[i][1]];
 				c = board.cells[wins[i][2]];
@@ -164,19 +174,20 @@
 			}
 		},
 		isDraw: function() {
+			// Review if there are still potential winning combinations
 			// See if any of the win-dices are still available
-			// if not, it's a draw
+			// if not, we have a draw
+			console.log("isDraw method");
+			// board.status = "draw";
 		}
 	};
 
 	// Wait until DOM is loaded to init gameStatus
 	document.addEventListener("DOMContentLoaded", function() {
-		console.log('Document loaded');
+		console.log('DOM loaded');
 		gameStatus.init();
 		gameStatus.update("No game in progress");
+		// Bind events to DOM once
 		gameStatus.bindEvents();
 	});
-	
-	
-
 })();

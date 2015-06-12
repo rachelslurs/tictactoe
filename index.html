@@ -10,29 +10,42 @@
 		tr {
 		  height: 100px;
 		}
+		table tr:nth-of-type(even) {
+		  background: transparent;
+		}
 
 		td {
 		  width: 100px;
 		  border: 2px solid #2d2d2d;
-		  text-align: center;
 		}
-		#player1 {
-			border:2px solid tomato;
+		td:hover {
+			border-color:skyblue;
+		}
+		input[type="text"] {
+			font-size:18px;
+			font-weight:bold;
+		}
+		input#player1 {
+			border: 1px solid tomato;
+			color: tomato;
 		}
 		.x {
 			background-color: tomato;
 			border:2px solid black;
+			text-align: center;
 		}
 		.x:after {
 			content:"X";
 			font-size:24px;
 		}
-		#player2 {
-			border:2px solid gold;
+		input#player2 {
+			border: 1px solid gold;
+			color:gold;
 		}
 		.o {
 			background-color: gold;
 			border:2px solid black;
+			text-align: center;
 		}
 		.o:after {
 			content:"O";
@@ -48,13 +61,34 @@
 	<div class="row" id="game">
 		<div class="large-4 columns">
 			<h1>Tic-Tac-Toe</h1>
-	      	<h3>No game in progress</h3>
-	      	<label>Name of Player 1:</label>
-	      	<input type="text" id="player1" placeholder="Player 1" />
-	      	<label>Name of Player 2:</label>
-	      	<input type="text" id="player2" placeholder="Player 2" />
-	      	<button class="medium success button" id="startButton">Start Game</button><br/>
-	        <button class="medium secondary button" id="resetButton">Reset Game</button>
+	      	<h4>No game in progress</h4>
+	      	<form>
+	      		<div class="row">
+	      			<div class="large-4 columns">
+		      			<label for="player1" class="inline">Player X:</label>
+	      			</div>
+	      			<div class="large-8 columns">
+		      			<input type="text" id="player1" placeholder="X" />
+	      			</div>
+	      		</div>
+	      		<div class="row">
+	      			<div class="large-4 columns">
+		      			<label for="player2" class="inline">Player O:</label>
+	      			</div>
+	      			<div class="large-8 columns">
+		      			<input type="text" id="player2" placeholder="O" />
+	      			</div>
+	      		</div>
+	      		<!-- <input id="computer" type="checkbox"><label for="computer">Play against computer</label> -->
+		      	<div class="row">
+		      		<div class="large-6 columns">
+			      		<button class="medium default button" id="startButton">Start</button>
+			      	</div>
+		      		<div class="large-6 columns">
+			        	<button class="medium secondary button" id="resetButton">Reset</button>
+			        </div>
+			    </div>
+			</form>
 	      </div>
 	      <div class="large-6 columns">
 	      	<h1>&nbsp;</h1>
