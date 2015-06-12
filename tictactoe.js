@@ -164,7 +164,8 @@
 			}
 		},
 		isDraw: function() {
-
+			// See if any of the win-dices are still available
+			// if not, it's a draw
 		}
 	};
 
