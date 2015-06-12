@@ -19,10 +19,9 @@
 	}
 	var players = {
 		init: function() {
-			player1 = new Player('player1',10,'x',true);
-			player2 = new Player('player2',-10,'o',false);
-			console.log(player1,player2);
-
+			player1 = new Player('player1',10,'X',true);
+			player2 = new Player('player2',-10,'O',false);
+			console.log('default',player1,player2);
 		},
 		save: function() {
 			if (player1.el.value) {
@@ -31,7 +30,7 @@
 			if (player2.el.value) {
 				player2.name=player2.el.value;
 			}
-			console.log(player1,player2);
+			console.log('saving',player1,player2);
 
 			// Disable player name changes during game
 			player1.el.disabled=true;
@@ -96,6 +95,8 @@
 			gameStatus.isDraw();
 			if (board.status == "win") {
 				gameStatus.update(currentTurn.name + " wins!");
+				currentTurn.points+=currentTurn.pointsOnWin;
+				console.log(currentTurn);
 				gameInProgress = false;
 				document.getElementById("startButton").disabled = false;
 			}
