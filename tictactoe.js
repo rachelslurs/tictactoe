@@ -6,7 +6,7 @@
 	var player1= {}; 
 	var player2= {};
 	var currentTurn = {};
-	var boardCells = document.getElementsByTagName('td');
+	var gameOver = true;
 	
 	var players = {
 		init: function() {
@@ -45,7 +45,6 @@
 			}
 			else {
 				currentTurn = player2;
-				console.log("Current turn is now " + currentTurn.name);
 			}
 			gameStatus.update(currentTurn.name + "'s turn");
 		}
@@ -53,10 +52,12 @@
 	var board = {
 		init: function() {		
 			this.status = "none";
+			this.boardCells = document.getElementsByTagName('td');
 			this.cells = [null,null,null,null,null,null,null,null,null];
 			console.log(this);
-			for (var i = 0; i < boardCells.length; i++) {
-				boardCells[i].className="blank";
+			for (var i = 0; i < this.boardCells.length; i++) {
+				this.boardCells[i].className="blank";
+				this.cells[i]=null;
 			}
 			gameStatus.update("Press Start Game");
 		},
@@ -65,16 +66,17 @@
 				console.log('space ' + space.dataset.place + " is blank, make move");
 				this.makeMove(space);
 			}
-			else {
+			else if (space.className == "x" || space.className == "y") {
 				console.log('space is not available');
 			}
+			
 		},
 		makeMove: function(space) {
 			this.cells[space.dataset.place] = currentTurn.mark;
+			this.boardCells[space.dataset.place] = currentTurn.mark;
 			console.log(this.cells);
 			space.className = currentTurn.mark;
 			this.check();
-			
 		},
 		check: function() {
 			console.log('checking...');
@@ -84,10 +86,10 @@
 			if (board.status == "win") {
 				gameStatus.update(currentTurn.name + " wins!");
 				console.log(currentTurn.name + " wins!");
-				gameStatus.unbindEvents();
+				gameOver = true;
 			}
 			else if (board.status == "draw") {
-
+				gameOver = true;
 			}
 			else {
 				players.nextTurn();
@@ -102,24 +104,27 @@
 		bindEvents: function() {
 			document.getElementById("resetButton").addEventListener("click", function(){
 				console.log('resetButton pressed');
+				gameOver = true;
 				board.init();
 				players.init();
 			});
 			document.getElementById("startButton").addEventListener("click", function(){
 				console.log('startButton pressed');
+				gameOver = false;
 				board.init();
 				players.init();
-				for (var i = 0; i < boardCells.length; ++i) {
-					boardCells[i].addEventListener("click", function() {
-						board.isSpaceEmpty(this);
-					}, true);
+				for (var i = 0; i < board.boardCells.length; ++i) {
+					board.boardCells[i].addEventListener("click", function() {
+						if (gameOver) {
+							console.log('No game in progress');
+						}
+						else {
+							board.isSpaceEmpty(this);
+						}
+						
+					});
 				}
 			});
-		},
-		unbindEvents: function() {
-			for (var i = 0; i < boardCells.length; ++i) {
-				boardCells[i].removeEventListener("click");
-			}
 		},
 		update: function(text) {
 			document.querySelector('h3').innerText = text;
