@@ -12,7 +12,7 @@
 		this.points = 0;
 		this.pointsOnWin=pointsOnWin;
 		this.name = playerMark;
-		this.el = document.getElementById(playerNumber);
+		this.el = document.querySelector("input#"+playerNumber);
 		this.el.disabled=false;
 		this.mark = playerMark;
 		this.bool = playerBool;
@@ -96,6 +96,7 @@
 			if (board.status == "win") {
 				gameStatus.update(currentTurn.name + " wins!");
 				currentTurn.points+=currentTurn.pointsOnWin;
+				document.querySelector('p#'+currentTurn.playerNumber).innerText=Math.abs(currentTurn.points/10);
 				console.log(currentTurn);
 				gameInProgress = false;
 				document.getElementById("startButton").disabled = false;
