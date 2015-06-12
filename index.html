@@ -38,46 +38,43 @@
 			content:"O";
 			font-size:24px;
 		}
+		#player1.current, #player2.current {
+			border-width: 5px;
+		}
 	</style>
 	
 </head>
 <body>
-	<div class="row">
-		<div class="large-12 columns">
+	<div class="row" id="game">
+		<div class="large-4 columns">
 			<h1>Tic-Tac-Toe</h1>
+	      	<h3>No game in progress</h3>
+	      	<label>Name of Player 1:</label>
+	      	<input type="text" id="player1" placeholder="Player 1" />
+	      	<label>Name of Player 2:</label>
+	      	<input type="text" id="player2" placeholder="Player 2" />
+	      	<button class="medium success button" id="startButton">Start Game</button><br/>
+	        <button class="medium secondary button" id="resetButton">Reset Game</button>
+	      </div>
+	      <div class="large-6 columns">
+		    <table>
+		      <tr>
+		      	<td data-place="0">&nbsp;</td>
+		      	<td data-place="1">&nbsp;</td>
+		      	<td data-place="2">&nbsp;</td>
+		      </tr>
+		      <tr>
+		      	<td data-place="3">&nbsp;</td>
+		      	<td data-place="4">&nbsp;</td>
+		      	<td data-place="5">&nbsp;</td>
+		      </tr>
+		      <tr>
+		      	<td data-place="6">&nbsp;</td>
+		      	<td data-place="7">&nbsp;</td>
+		      	<td data-place="8">&nbsp;</td>
+		      </tr>
+		    </table>
 		</div>
 	</div>
-	<div class="row" id="game">
-	<div class="large-3 columns">
-      	<h3>No game in progress</h3>
-	</div>
-      <div class="large-3 columns">
-      	<label>Name of Player 1:</label>
-      	<input type="text" id="player1" placeholder="Player 1" />
-      	<label>Name of Player 2:</label>
-      	<input type="text" id="player2" placeholder="Player 2" />
-      	<button class="medium success button" id="startButton">Start Game</button><br/>
-        <button class="medium secondary button" id="resetButton">Reset Game</button>
-      </div>
-      <div class="large-6 columns">
-	    <table>
-	      <tr>
-	      	<td data-place="0">&nbsp;</td>
-	      	<td data-place="1">&nbsp;</td>
-	      	<td data-place="2">&nbsp;</td>
-	      </tr>
-	      <tr>
-	      	<td data-place="3">&nbsp;</td>
-	      	<td data-place="4">&nbsp;</td>
-	      	<td data-place="5">&nbsp;</td>
-	      </tr>
-	      <tr>
-	      	<td data-place="6">&nbsp;</td>
-	      	<td data-place="7">&nbsp;</td>
-	      	<td data-place="8">&nbsp;</td>
-	      </tr>
-	    </table>
-	</div>
-</div>
 </body>
 </html>

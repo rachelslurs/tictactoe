@@ -45,11 +45,13 @@
 		nextTurn: function() {
 			if (!currentTurn.val === player1.val) {
 				currentTurn = player1;
-				console.log("It is " + currentTurn.name + "'s turn.");
+				player2.el.className = "";
 			}
 			else {
 				currentTurn = player2;
+				player1.el.className = "";
 			}
+			currentTurn.el.className = "current";
 			gameStatus.update(currentTurn.name + "'s turn");
 		}
 	};
@@ -119,7 +121,7 @@
 				console.log('resetButton pressed');
 				gameInProgress = false;
 				gameStatus.init();
-				gameStatus.update("Press Start Game");
+				gameStatus.update("No game in progress");
 			});
 			document.getElementById("startButton").addEventListener("click", function(){
 				console.log('startButton pressed');
@@ -170,7 +172,7 @@
 	document.addEventListener("DOMContentLoaded", function() {
 		console.log('Document loaded');
 		gameStatus.init();
-		gameStatus.update("Press Start Game");
+		gameStatus.update("No game in progress");
 		gameStatus.bindEvents();
 	});
 	
