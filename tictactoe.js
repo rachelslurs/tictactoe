@@ -10,7 +10,9 @@
 	function Player(playerNumber, pointsOnWin, playerMark, playerBool, minOrMax) {
 		this.playerNumber = playerNumber;
 		this.points = 0;
-		this.pointsOnWin=pointsOnWin;
+		this.pointsOne= pointsOnWin/10; // +/-1
+		this.pointsTwo=pointsOnWin; // +/-10
+		this.pointsThree=pointsOnWin*10; // +/-100
 		this.score = 0;
 		this.name = playerMark;
 		this.el = document.querySelector("input#"+playerNumber);
@@ -61,10 +63,10 @@
 		init: function() {		
 			this.status = "none";
 			this.boardCells = document.getElementsByTagName('td');
-			this.cells = [null,null,null,null,null,null,null,null,null];
+			this.cells = ["","","","","","","","",""];
 			for (var i = 0; i < this.boardCells.length; i++) {
 				this.boardCells[i].className="blank";
-				this.cells[i]=null;
+				this.cells[i]="";
 			}
 		},
 		isSpaceEmpty: function(space) {
@@ -88,7 +90,7 @@
 					empties.push(i);
 				}
 			}
-			console.log(empties);
+			return empties;
 		},
 		makeMove: function(space,index) {
 			this.cells[index] = currentTurn.mark;
@@ -100,16 +102,16 @@
 			this.check();
 		},
 		check: function() {
-			gameStatus.isWinner();
-			gameStatus.isDraw();
-			if (board.status == "win") {
+			if (gameStatus.isWinner() == "win") {
+				board.status = "win";
 				gameStatus.update(currentTurn.name + " wins!");
 				currentTurn.score+=currentTurn.pointsOnWin * 10;
 				document.querySelector('p#'+currentTurn.playerNumber).innerText=Math.abs(currentTurn.score/10);
 				gameInProgress = false;
 				document.getElementById("startButton").disabled = false;
 			}
-			else if (board.status == "draw") {
+			else if (gameStatus.isDraw() == "draw") {
+				board.status = "draw";
 				gameStatus.update("Draw.");
 				gameInProgress = false;
 				document.getElementById("startButton").disabled = false;
@@ -153,7 +155,7 @@
 		},
 		isWinner: function() {
 			// Review whether any winning combinations have been made
-			var wins = [
+			var lines = [
 			  [0,1,2],
 			  [3,4,5],
 			  [6,7,8],
@@ -163,29 +165,36 @@
 			  [0,4,8],
 			  [2,4,6]
 			 ];
-			for(var i=0; i<wins.length; i++) {
+			for(var i=0; i<lines.length; i++) {
 				var a, b, c;
-				// cells holding 'x', 'o', or null
-				a = board.cells[wins[i][0]];
-				b = board.cells[wins[i][1]];
-				c = board.cells[wins[i][2]];
-				if (a == b && a == c && a != null) {
-					board.status = "win";
-					console.log(a,b,c);
+				// cells holding 'x', 'o', or ""
+				a = board.cells[lines[i][0]];
+				b = board.cells[lines[i][1]];
+				c = board.cells[lines[i][2]];
+				if (a == b && a == c && a != "") {
+					// Three in a row
+					console.log('three are the same',a,b,c);
 					console.log(currentTurn.minOrMax);
-					console.log(currentTurn.pointsOnWin);
+					console.log(currentTurn.pointsThree);
+					return "win";
 				}
 				else if 
-					((a == b && a !== null && (c == null || c.length < 1)) || 
-					(a == c && c !== null && (b == null || b.length < 1)) || 
-					(b == c && b !== null && (a == null || a.length < 1))) {
+					((a == b && a !== "" && (c == "" || c.length < 1)) || 
+					(a == c && c !== "" && (b == "" || b.length < 1)) || 
+					(b == c && b !== "" && (a == "" || a.length < 1))) {
+					// Two in a row and third is blank
 					console.log('2 are the same', a,b,c);
 					console.log(currentTurn.name);
-					console.log(currentTurn.minOrMax);
-					currentTurn.score+=currentTurn.pointsOnWin;
-					console.log(currentTurn.pointsOnWin);
+					currentTurn.score+=currentTurn.pointsTwo;
+					console.log(currentTurn.pointsTwo);
 					console.log(currentTurn.score);
 				}
+				else if ((a !== b && b == c && b == "") ||
+						(b !== c && a == c && a == "") ||
+						(a !== c && b == c && c == "")) {
+						// One in a row and other two spaces are blank
+							console.log('1 in the row', a,b,c);
+						}
 			}
 		},
 		isDraw: function() {
@@ -193,8 +202,21 @@
 			// See if any of the win-dices are still available
 			// if not, we have a draw
 			console.log("isDraw method");
-			board.getAvailableMoves();
-			// board.status = "draw";
+			minimax.init();
+			minimax.possibleMoves(currentTurn);
+			//return "draw";
+		}
+	};
+	var minimax = {
+		init: function() {
+			var currentScore = 0;
+			var bestScore = 0;
+		},
+		possibleMoves: function(player) {
+			console.log(player,board.getAvailableMoves());
+		},
+		possibleScore: function() {
+
 		}
 	};
 
