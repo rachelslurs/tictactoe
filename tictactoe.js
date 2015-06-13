@@ -7,20 +7,22 @@
 	var currentTurn = {};
 	var gameInProgress = false;
 	
-	function Player(playerNumber, pointsOnWin, playerMark, playerBool) {
+	function Player(playerNumber, pointsOnWin, playerMark, playerBool, minOrMax) {
 		this.playerNumber = playerNumber;
 		this.points = 0;
 		this.pointsOnWin=pointsOnWin;
+		this.score = 0;
 		this.name = playerMark;
 		this.el = document.querySelector("input#"+playerNumber);
 		this.el.disabled=false;
 		this.mark = playerMark;
 		this.bool = playerBool;
+		this.minOrMax = minOrMax;
 	}
 	var players = {
 		init: function() {
-			player1 = new Player('player1',10,'X',true);
-			player2 = new Player('player2',-10,'O',false);
+			player1 = new Player('player1',10,'X',true,"max");
+			player2 = new Player('player2',-10,'O',false,"min");
 			console.log('default',player1,player2);
 		},
 		save: function() {
@@ -78,8 +80,15 @@
 			else {
 				console.log('Game is not in progress.');
 			}
-				
-			
+		},
+		getAvailableMoves: function() {
+			var empties=[];
+			for (var i = 0; i < this.cells.length; i++) {
+				if (!this.cells[i]) {
+					empties.push(i);
+				}
+			}
+			console.log(empties);
 		},
 		makeMove: function(space,index) {
 			this.cells[index] = currentTurn.mark;
@@ -95,9 +104,8 @@
 			gameStatus.isDraw();
 			if (board.status == "win") {
 				gameStatus.update(currentTurn.name + " wins!");
-				currentTurn.points+=currentTurn.pointsOnWin;
-				document.querySelector('p#'+currentTurn.playerNumber).innerText=Math.abs(currentTurn.points/10);
-				console.log(currentTurn);
+				currentTurn.score+=currentTurn.pointsOnWin * 10;
+				document.querySelector('p#'+currentTurn.playerNumber).innerText=Math.abs(currentTurn.score/10);
 				gameInProgress = false;
 				document.getElementById("startButton").disabled = false;
 			}
@@ -164,6 +172,19 @@
 				if (a == b && a == c && a != null) {
 					board.status = "win";
 					console.log(a,b,c);
+					console.log(currentTurn.minOrMax);
+					console.log(currentTurn.pointsOnWin);
+				}
+				else if 
+					((a == b && a !== null && (c == null || c.length < 1)) || 
+					(a == c && c !== null && (b == null || b.length < 1)) || 
+					(b == c && b !== null && (a == null || a.length < 1))) {
+					console.log('2 are the same', a,b,c);
+					console.log(currentTurn.name);
+					console.log(currentTurn.minOrMax);
+					currentTurn.score+=currentTurn.pointsOnWin;
+					console.log(currentTurn.pointsOnWin);
+					console.log(currentTurn.score);
 				}
 			}
 		},
@@ -172,6 +193,7 @@
 			// See if any of the win-dices are still available
 			// if not, we have a draw
 			console.log("isDraw method");
+			board.getAvailableMoves();
 			// board.status = "draw";
 		}
 	};
