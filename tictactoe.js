@@ -23,8 +23,8 @@
 	}
 	var players = {
 		init: function() {
-			player1 = new Player('player1',10,'X',true,"max");
-			player2 = new Player('player2',-10,'O',false,"min");
+			player1 = new Player('player1',10,'X',true, "max");
+			player2 = new Player('player2',-10,'O',false, "min");
 			console.log('default',player1,player2);
 		},
 		save: function() {
@@ -49,10 +49,12 @@
 			if (!currentTurn.bool === player1.bool) {
 				currentTurn = player1;
 				player2.el.className = "";
+				minimax.init(player1);
 			}
 			else {
 				currentTurn = player2;
 				player1.el.className = "";
+				minimax.init(player2);
 			}
 			currentTurn.el.className = "current";
 			gameStatus.update(currentTurn.name + "'s turn");
@@ -202,21 +204,84 @@
 			// See if any of the win-dices are still available
 			// if not, we have a draw
 			console.log("isDraw method");
-			minimax.init();
-			minimax.possibleMoves(currentTurn);
+			minimax.init(currentTurn);
+			//minimax.possibleMoves(currentTurn);
 			//return "draw";
 		}
 	};
 	var minimax = {
-		init: function() {
+		init: function(player) {
 			var currentScore = 0;
 			var bestScore = 0;
+			this.possibleScore(player, currentScore, bestScore);
 		},
 		possibleMoves: function(player) {
 			console.log(player,board.getAvailableMoves());
 		},
-		possibleScore: function() {
+		possibleScore: function(player, currentScore, bestScore) {
+			var lines = [
+			  [0,1,2],
+			  [3,4,5],
+			  [6,7,8],
+			  [0,3,6],
+			  [1,4,7],
+			  [2,5,8],
+			  [0,4,8],
+			  [2,4,6]
+			 ];
+			 console.log(player);
+			for(var i=0; i<lines.length; i++) {
+				var a, b, c;
+				// cells holding 'x', 'o', or ""
+				a = board.cells[lines[i][0]];
+				b = board.cells[lines[i][1]];
+				c = board.cells[lines[i][2]];
+				if (a == b && a == c && a != "") {
+					// Three in a row
+					console.log('three are the same',a, b, c);
+					bestScore=player.pointsThree;
+					return "win";
+				}
+				else if 
+					((a == b && a !== "" && (c == "" || c.length < 1)) || 
+					(a == c && c !== "" && (b == "" || b.length < 1)) || 
+					(b == c && b !== "" && (a == "" || a.length < 1))) {
+					// Two in a row and third is blank
+					console.log('2 are the same', a,b,c);
+					console.log(player.name);
+					if (player.minOrMax == "max") {
+						if ((currentScore+=player.pointsTwo) > bestScore) {
+							bestScore = currentScore;
+						}
+					}
+					else {
+						if ((currentScore+=player.pointsTwo) < bestScore) {
+							bestScore = currentScore;
+						}
+					}
+				}
+				else if ((a !== b && b == c && b == "") ||
+						(b !== c && a == c && a == "") ||
+						(a !== c && b == c && c == "")) {
+						// One in a row and other two spaces are blank
+						console.log('1 in the row', a,b,c);
 
+						if (player.minOrMax == "max") {
+							if ((currentScore+=player.pointsOne) > bestScore) {
+								bestScore = currentScore;
+							}
+						}
+						else {
+							if ((currentScore+=player.pointsOne) < bestScore) {
+								bestScore = currentScore;
+							}
+						}
+					}
+					else {
+						console.warn('DRAW');
+					}
+				console.log('best score is', bestScore);
+			}
 		}
 	};
 
