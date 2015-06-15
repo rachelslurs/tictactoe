@@ -47,14 +47,14 @@
 		},
 		nextTurn: function() {
 			if (!currentTurn.bool === player1.bool) {
+				minimax.init(player2);
 				currentTurn = player1;
 				player2.el.className = "";
-				minimax.init(player1);
 			}
 			else {
+				minimax.init(player1);
 				currentTurn = player2;
 				player1.el.className = "";
-				minimax.init(player2);
 			}
 			currentTurn.el.className = "current";
 			gameStatus.update(currentTurn.name + "'s turn");
@@ -204,21 +204,36 @@
 			// See if any of the win-dices are still available
 			// if not, we have a draw
 			console.log("isDraw method");
-			minimax.init(currentTurn);
+			//minimax.init(currentTurn);
 			//minimax.possibleMoves(currentTurn);
 			//return "draw";
 		}
 	};
 	var minimax = {
 		init: function(player) {
-			var currentScore = 0;
-			var bestScore = 0;
-			this.possibleScore(player, currentScore, bestScore);
+			this.possibleScore(player);
 		},
 		possibleMoves: function(player) {
 			console.log(player,board.getAvailableMoves());
 		},
-		possibleScore: function(player, currentScore, bestScore) {
+		bestCase: function(player, points, bestScore) {
+			if (player.minOrMax == "max") {
+				if (points > bestScore) {
+					bestScore = points;
+					console.log(player.minOrMax,bestScore,player);
+					return bestScore;
+				}
+			}
+			else if (player.minOrMax == "min") {
+				if (points < bestScore) {
+					bestScore = points;
+					console.log(player.minOrMax,bestScore,player);
+					return bestScore;
+				}
+			}
+		},
+		possibleScore: function(player) {
+			var bestScore=0;
 			var lines = [
 			  [0,1,2],
 			  [3,4,5],
@@ -239,8 +254,8 @@
 				if (a == b && a == c && a != "") {
 					// Three in a row
 					console.log('three are the same',a, b, c);
-					bestScore=player.pointsThree;
-					return "win";
+					
+					bestScore = this.bestCase(player, player.pointsThree,bestScore);
 				}
 				else if 
 					((a == b && a !== "" && (c == "" || c.length < 1)) || 
@@ -249,16 +264,7 @@
 					// Two in a row and third is blank
 					console.log('2 are the same', a,b,c);
 					console.log(player.name);
-					if (player.minOrMax == "max") {
-						if ((currentScore+=player.pointsTwo) > bestScore) {
-							bestScore = currentScore;
-						}
-					}
-					else {
-						if ((currentScore+=player.pointsTwo) < bestScore) {
-							bestScore = currentScore;
-						}
-					}
+					bestScore = this.bestCase(player, player.pointsTwo,bestScore);
 				}
 				else if ((a !== b && b == c && b == "") ||
 						(b !== c && a == c && a == "") ||
@@ -266,21 +272,8 @@
 						// One in a row and other two spaces are blank
 						console.log('1 in the row', a,b,c);
 
-						if (player.minOrMax == "max") {
-							if ((currentScore+=player.pointsOne) > bestScore) {
-								bestScore = currentScore;
-							}
-						}
-						else {
-							if ((currentScore+=player.pointsOne) < bestScore) {
-								bestScore = currentScore;
-							}
-						}
+						bestScore = this.bestCase(player, player.pointsOne,bestScore);
 					}
-					else {
-						console.warn('DRAW');
-					}
-				console.log('best score is', bestScore);
 			}
 		}
 	};
