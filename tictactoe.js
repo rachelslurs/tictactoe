@@ -1,6 +1,5 @@
 
 (function TicTacToe() {
-
 	// Global variables and DOM selectors
 	var player1= {}; 
 	var player2= {};
@@ -65,7 +64,7 @@
 		init: function() {		
 			this.status = "none";
 			this.boardCells = document.getElementsByTagName('td');
-			this.cells = ["","","","","","","","",""];
+			this.cells = new Array(8);
 			for (var i = 0; i < this.boardCells.length; i++) {
 				this.boardCells[i].className="blank";
 				this.cells[i]="";
