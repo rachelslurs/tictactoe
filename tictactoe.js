@@ -59,10 +59,10 @@
 		init: function() {		
 			this.status = "none";
 			this.boardCells = document.getElementsByTagName('td');
-			this.cells = [null,null,null,null,null,null,null,null,null];
+			this.cells = new Array(8);
 			for (var i = 0; i < this.boardCells.length; i++) {
 				this.boardCells[i].className="blank";
-				this.cells[i]=null;
+				this.cells[i]="";
 			}
 		},
 		isSpaceEmpty: function(space) {
@@ -91,9 +91,9 @@
 			this.check();
 		},
 		check: function() {
-			gameStatus.isWinner();
-			gameStatus.isDraw();
-			if (board.status == "win") {
+			
+			if (gameStatus.isWinner() == "win") {
+				board.status="win";
 				gameStatus.update(currentTurn.name + " wins!");
 				currentTurn.points+=currentTurn.pointsOnWin;
 				document.querySelector('p#'+currentTurn.playerNumber).innerText=Math.abs(currentTurn.points/10);
@@ -101,7 +101,8 @@
 				gameInProgress = false;
 				document.getElementById("startButton").disabled = false;
 			}
-			else if (board.status == "draw") {
+			else if (gameStatus.isDraw() == "draw") {
+				board.status="draw";
 				gameStatus.update("Draw.");
 				gameInProgress = false;
 				document.getElementById("startButton").disabled = false;
@@ -157,13 +158,13 @@
 			 ];
 			for(var i=0; i<wins.length; i++) {
 				var a, b, c;
-				// cells holding 'x', 'o', or null
+				// cells holding 'x', 'o', or ""
 				a = board.cells[wins[i][0]];
 				b = board.cells[wins[i][1]];
 				c = board.cells[wins[i][2]];
-				if (a == b && a == c && a != null) {
-					board.status = "win";
+				if (a == b && a == c && a != "") {
 					console.log(a,b,c);
+					return "win"
 				}
 			}
 		},
